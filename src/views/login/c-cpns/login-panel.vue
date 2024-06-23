@@ -4,9 +4,10 @@ import PaneAccount from './pane-account.vue'
 import PanePhone from './pane-phone.vue'
 const isRemmemberPassword = ref(false)
 const activePane = ref('account')
+const paneAccountRef = ref<InstanceType<typeof PaneAccount>>()
 
 const handleLogin = () => {
-  console.log(activePane.value, '登录')
+  paneAccountRef?.value?.handleLoginAction()
 }
 </script>
 
@@ -22,7 +23,7 @@ const handleLogin = () => {
           </span>
         </template>
 
-        <PaneAccount />
+        <PaneAccount ref="paneAccountRef" />
       </el-tab-pane>
       <el-tab-pane name="phone">
         <template #label>
