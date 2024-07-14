@@ -1,27 +1,41 @@
 import { defineStore } from 'pinia'
-import { accountLogin } from '@/service/login'
+import { accountLogin, getUserInfoById, getUserMenuById } from '@/service/login'
 import type { IAccount } from '@/types'
 import { localCache } from '@/utils/cache'
+import router from '@/router'
+import { FLAG_TOKEN, USERINFO, USERMENU } from '@/constants'
 
-const FLAG_TOKEN = 'token'
-// const FLAG_ID = 'id'
-// const FLAG_NAME = 'name'
+interface IState {
+  token: string
+  userInfo: any
+  userMenu: any
+}
 
 const useAccountStore = defineStore('account', {
-  state: () => ({
-    id: '',
+  state: (): IState => ({
     token: localCache.getCache(FLAG_TOKEN),
-    name: ''
+    userInfo: localCache.getCache(USERINFO) ?? {},
+    userMenu: localCache.getCache(USERMENU) ?? []
   }),
   actions: {
-    accountLoginAction(account: IAccount) {
-      accountLogin(account).then((res) => {
-        const { id, name, token } = res.data
-        this.id = id
-        this.name = name
-        this.token = token
-        localCache.setCache(FLAG_TOKEN, token)
-      })
+    async accountLoginAction(account: IAccount) {
+      //1.账号登录
+      const res = await accountLogin(account)
+      const { id, token } = res.data
+      this.token = token
+      localCache.setCache(FLAG_TOKEN, token)
+
+      //2.获取用户的信息
+      const userInfo = await getUserInfoById(id)
+      localCache.setCache(USERINFO, userInfo.data)
+      this.userInfo = userInfo.data
+
+      //3.获取用户菜单信息
+      const userMenu = await getUserMenuById(this.userInfo.role.id)
+      localCache.setCache(USERMENU, userMenu.data)
+      this.userMenu = userMenu.data
+
+      router.push('/main')
     }
   }
 })

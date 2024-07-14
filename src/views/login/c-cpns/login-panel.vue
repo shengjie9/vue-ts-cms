@@ -1,13 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import PaneAccount from './pane-account.vue'
 import PanePhone from './pane-phone.vue'
-const isRemmemberPassword = ref(false)
+import { localCache } from '@/utils/cache'
+import type { CheckboxValueType } from 'element-plus/lib/components/checkbox/src/checkbox.js'
+
+const ISREMMEMBER = 'isremmenber'
+
+const isRemmemberPassword = ref<boolean>(localCache.getCache(ISREMMEMBER) ?? false)
 const activePane = ref('account')
 const paneAccountRef = ref<InstanceType<typeof PaneAccount>>()
 
+// watch(isRemmemberPassword, (newValue) => {
+//   console.log(newValue)
+//   localCache.setCache(ISREMMEMBER, newValue)
+// })
+
 const handleLogin = () => {
-  paneAccountRef?.value?.handleLoginAction()
+  paneAccountRef?.value?.handleLoginAction(isRemmemberPassword.value)
+}
+
+const handleChange = (value: CheckboxValueType) => {
+  localCache.setCache(ISREMMEMBER, value)
 }
 </script>
 
@@ -37,7 +51,12 @@ const handleLogin = () => {
     </el-tabs>
 
     <div class="login__box">
-      <el-checkbox v-model="isRemmemberPassword" label="记住密码" size="large" />
+      <el-checkbox
+        v-model="isRemmemberPassword"
+        @change="handleChange"
+        label="记住密码"
+        size="large"
+      />
       <el-button type="primary" link>忘记密码</el-button>
     </div>
 

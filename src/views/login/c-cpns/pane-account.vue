@@ -4,8 +4,15 @@ import { type FormRules, type FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { accountLogin } from '@/service/login'
 import useAccountStore from '@/store/login'
+import { localCache } from '@/utils/cache'
 
-const form = reactive({ username: '', password: '' })
+const USERNAME = 'username'
+const PASSWORD = 'password'
+
+const form = reactive({
+  username: localCache.getCache(USERNAME) ?? '',
+  password: localCache.getCache(PASSWORD) ?? ''
+})
 const rulesFormRef = ref<FormInstance>()
 const accountStore = useAccountStore()
 
@@ -20,10 +27,17 @@ const rules: FormRules = {
   ]
 }
 
-const handleLoginAction = async () => {
+const handleLoginAction = async (isRemmemberPassword: boolean) => {
   await rulesFormRef.value?.validate((vaild, fields) => {
     if (vaild) {
       accountStore.accountLoginAction({ name: form.username, password: form.password })
+      if (isRemmemberPassword) {
+        localCache.setCache(USERNAME, form.username)
+        localCache.setCache(PASSWORD, form.password)
+      } else {
+        localCache.deleteCache(USERNAME)
+        localCache.deleteCache(PASSWORD)
+      }
     } else {
       ElMessage.error('提交失败，请重新尝试！')
       console.log(fields, '失败')

@@ -11,10 +11,21 @@ const form = ref({ phone: '', code: '' })
         <el-input v-model="form.phone" />
       </el-form-item>
       <el-form-item label="验证码" required>
-        <el-input v-model="form.code" show-password type="password" />
+        <div class="verify-code">
+          <el-input v-model="form.code" show-password type="password" />
+          <el-button class="btn" type="primary">获取验证码</el-button>
+        </div>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.verify-code {
+  display: flex;
+
+  .btn {
+    margin-left: 8px;
+  }
+}
+</style>

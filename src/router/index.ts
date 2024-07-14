@@ -1,3 +1,5 @@
+import { FLAG_TOKEN } from '@/constants'
+import { localCache } from '@/utils/cache'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -5,7 +7,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/mian'
+      redirect: '/main'
     },
     {
       path: '/login',
@@ -13,7 +15,7 @@ const router = createRouter({
       component: () => import('@/views/login/index.vue')
     },
     {
-      path: '/mian',
+      path: '/main',
       name: 'main',
       component: () => import('@/views/main/index.vue')
     },
@@ -22,6 +24,20 @@ const router = createRouter({
       component: () => import('@/views/not-found/index.vue')
     }
   ]
+})
+
+//路由前置守卫
+//当页面从 / 跳转到 /main
+//from:/ to:/main
+router.beforeEach((to) => {
+  const token = localCache.getCache(FLAG_TOKEN)
+  console.log(to.path, 'token123')
+
+  if (to.path === '/main' && !token) {
+    console.log('token', token)
+
+    return '/login'
+  }
 })
 
 export default router
