@@ -16,9 +16,15 @@ const router = createRouter({
     },
     {
       path: '/main',
-      name: 'main',
-      component: () => import('@/views/main/index.vue')
+      component: () => import('@/views/main/index.vue'),
+      children: [
+        {
+          path: '/main/analysis/dashboard',
+          component: () => import('@/views/main/analysis/dashboard/dashboard.vue')
+        }
+      ]
     },
+
     {
       path: '/:patchMatch(.*)',
       component: () => import('@/views/not-found/index.vue')

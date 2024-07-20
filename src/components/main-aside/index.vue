@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import useAccountStore from '@/store/login'
 
 defineProps({
@@ -8,6 +9,12 @@ defineProps({
   }
 })
 const store = useAccountStore()
+const router = useRouter()
+
+const handleRouteClick = (item: any) => {
+  console.log(item.url, 'url')
+  router.push(item.url)
+}
 
 console.log(store.userMenu, 'userMenu')
 </script>
@@ -37,7 +44,7 @@ console.log(store.userMenu, 'userMenu')
             </template>
 
             <template v-for="subItem in item.children" :key="subItem.id">
-              <el-menu-item :index="subItem.id + ''">
+              <el-menu-item :index="subItem.id + ''" @click="handleRouteClick(subItem)">
                 <span> {{ subItem.name }} </span>
               </el-menu-item>
             </template>
