@@ -44,7 +44,7 @@ const changeFold = (flag: boolean) => {
   }
 
   .el-main {
-    background: palevioletred;
+    background: #f0f2f6;
   }
 }
 </style>

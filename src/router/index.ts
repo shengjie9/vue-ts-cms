@@ -1,5 +1,6 @@
 import { FLAG_TOKEN } from '@/constants'
 import { localCache } from '@/utils/cache'
+import { firstRoute } from '@/utils/map-menu'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -16,13 +17,9 @@ const router = createRouter({
     },
     {
       path: '/main',
+      name: 'main',
       component: () => import('@/views/main/index.vue'),
-      children: [
-        {
-          path: '/main/analysis/dashboard',
-          component: () => import('@/views/main/analysis/dashboard/dashboard.vue')
-        }
-      ]
+      children: []
     },
 
     {
@@ -37,12 +34,13 @@ const router = createRouter({
 //from:/ to:/main
 router.beforeEach((to) => {
   const token = localCache.getCache(FLAG_TOKEN)
-  console.log(to.path, 'token123')
-
+  // console.log(to.path, 'to.path')
   if (to.path === '/main' && !token) {
-    console.log('token', token)
-
     return '/login'
+  }
+
+  if (to.path === '/main') {
+    return firstRoute.path
   }
 })
 

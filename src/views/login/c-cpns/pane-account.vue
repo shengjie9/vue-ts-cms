@@ -10,8 +10,8 @@ const USERNAME = 'username'
 const PASSWORD = 'password'
 
 const form = reactive({
-  username: localCache.getCache(USERNAME) ?? '',
-  password: localCache.getCache(PASSWORD) ?? ''
+  username: localCache.getCache(USERNAME) ?? 'coderwhy',
+  password: localCache.getCache(PASSWORD) ?? '123456'
 })
 const rulesFormRef = ref<FormInstance>()
 const accountStore = useAccountStore()

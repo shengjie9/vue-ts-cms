@@ -1,22 +1,28 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import useAccountStore from '@/store/login'
-
+import { mapPathToMenu } from '@/utils/map-menu'
 defineProps({
   isFold: {
     type: Boolean,
     default: true
   }
 })
+
 const store = useAccountStore()
 const router = useRouter()
+const route = useRoute()
+
+const asidFlag = computed(() => {
+  const currentRoute = mapPathToMenu(route.path, store.userMenu) as any
+  return currentRoute.id
+})
+//ref((currentRoute as any).id)
 
 const handleRouteClick = (item: any) => {
-  console.log(item.url, 'url')
   router.push(item.url)
 }
-
-console.log(store.userMenu, 'userMenu')
 </script>
 
 <template>
@@ -33,7 +39,7 @@ console.log(store.userMenu, 'userMenu')
         text-color="#b7bdc3"
         active-text-color="#fff"
         background-color="#001529"
-        default-active="39"
+        :default-active="asidFlag + ''"
         :collapse="!isFold"
       >
         <template v-for="item in store.userMenu" :key="item.id">

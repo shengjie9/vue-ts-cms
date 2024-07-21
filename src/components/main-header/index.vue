@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import headerCrumb from './c-cpns/header-crumb.vue'
 const emit = defineEmits(['changeFold'])
 const isFold = ref(true)
 
@@ -14,11 +15,12 @@ const handleFold = () => {
     <div class="icon" @click="handleFold">
       <el-icon size="28px">
         <component :is="isFold ? 'Expand' : 'Fold'"></component>
-        <!-- <component :is="'Fold'"></component> -->
       </el-icon>
     </div>
     <div class="left">
-      <div class="breadcrumb">面包屑</div>
+      <div class="breadcrumb">
+        <headerCrumb />
+      </div>
       <div class="userInfo">用户信息</div>
     </div>
   </div>

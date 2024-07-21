@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { accountLogin, getUserInfoById, getUserMenuById } from '@/service/login'
 import type { IAccount } from '@/types'
 import { localCache } from '@/utils/cache'
+import { mapMenuToRoutes } from '@/utils/map-menu'
 import router from '@/router'
 import { FLAG_TOKEN, USERINFO, USERMENU } from '@/constants'
 
@@ -13,9 +14,9 @@ interface IState {
 
 const useAccountStore = defineStore('account', {
   state: (): IState => ({
-    token: localCache.getCache(FLAG_TOKEN),
-    userInfo: localCache.getCache(USERINFO) ?? {},
-    userMenu: localCache.getCache(USERMENU) ?? []
+    token: '',
+    userInfo: {},
+    userMenu: []
   }),
   actions: {
     async accountLoginAction(account: IAccount) {
@@ -35,7 +36,25 @@ const useAccountStore = defineStore('account', {
       localCache.setCache(USERMENU, userMenu.data)
       this.userMenu = userMenu.data
 
+      const userRoutes = mapMenuToRoutes(this.userMenu)
+      console.log(userRoutes, 'userMenus')
+
+      userRoutes.forEach((item) => router.addRoute('main', item))
       router.push('/main')
+    },
+    async reloadLocalConfig() {
+      const userInfo = localCache.getCache(USERINFO)
+      const token = localCache.getCache(FLAG_TOKEN)
+      const userMenus = localCache.getCache(USERMENU)
+
+      if (userInfo && token && userMenus) {
+        this.userInfo = userInfo
+        this.token = token
+        this.userMenu = userMenus
+
+        const userRoutes = mapMenuToRoutes(this.userMenu)
+        userRoutes.forEach((item) => router.addRoute('main', item))
+      }
     }
   }
 })
