@@ -1,14 +1,17 @@
 <script setup lang="ts" name="user">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
+import type { IUserQueryFormData } from '@/types/user'
+
+const emit = defineEmits(['queryClick', 'resetClick'])
 
 const formRef = ref<InstanceType<typeof ElForm>>()
-const form = reactive({
+const form = reactive<IUserQueryFormData>({
   name: '',
   realname: '',
   cellphone: '',
   enable: 1,
-  createAt: []
+  createAt: ''
 })
 
 const options = [
@@ -23,10 +26,13 @@ const options = [
 ]
 
 const handleReset = () => {
+  emit('resetClick')
   formRef.value?.resetFields()
 }
 
-const handleSearch = () => {}
+const handleSearch = () => {
+  emit('queryClick', form)
+}
 </script>
 
 <template>
@@ -87,10 +93,10 @@ const handleSearch = () => {}
 <style scoped lang="less">
 .form {
   background: #fff;
-  padding: 20px;
+  padding: 10px;
 
   .el-form-item {
-    padding: 20px 30px;
+    padding: 10px 20px;
     margin: 0;
   }
 

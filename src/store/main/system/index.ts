@@ -1,6 +1,7 @@
 import { postUserListData } from '@/service/main/system'
 import { defineStore } from 'pinia'
 import type { IUserStoreType } from './type'
+import type { IUserQuery } from '@/types/user'
 
 export const useSystemStore = defineStore('system', {
   state: (): IUserStoreType => ({
@@ -8,8 +9,8 @@ export const useSystemStore = defineStore('system', {
     userTotalCount: 0
   }),
   actions: {
-    async postUserListDataAction() {
-      const { data } = await postUserListData()
+    async postUserListDataAction(queryInfo: IUserQuery) {
+      const { data } = await postUserListData(queryInfo)
       this.userList = data.list
       this.userTotalCount = data.totalCount
     }
